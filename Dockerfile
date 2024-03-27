@@ -1,4 +1,4 @@
-FROM maven:3.5.3-jdk-8-alpine as BUILD
+FROM maven:3.8.3-openjdk-17 as BUILD
 
 WORKDIR /app
 COPY . .
