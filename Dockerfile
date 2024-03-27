@@ -1,14 +1,14 @@
-# Sử dụng một hình ảnh cơ sở chứa Java
-FROM openjdk:17-jdk-slim
+# Sử dụng hình ảnh môi trường Java
+FROM openjdk:17-jdk-alpine
 
-# Tạo thư mục /app trong container
+# Thiết lập thư mục làm việc của ứng dụng trong container
 WORKDIR /app
 
-# Thêm tệp jar của ứng dụng vào thư mục /app trong hình ảnh
-COPY target/Demouploadanddownload-0.0.1-SNAPSHOT.jar /app/app.jar
+# Sao chép các file jar vào thư mục /app trong container
+COPY target/demo-0.0.1-SNAPSHOT.jar /app/demo.jar
 
-# Port mà ứng dụng sử dụng
+# Expose cổng 8080 của container
 EXPOSE 8080
 
-# Lệnh chạy ứng dụng khi container được khởi chạy
-CMD ["java", "-jar", "app.jar"]
+# Lệnh chạy ứng dụng Spring Boot khi container được khởi chạy
+CMD ["java", "-jar", "demo.jar"]
