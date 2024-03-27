@@ -1,19 +1,21 @@
-# Sử dụng hình ảnh môi trường Java
-FROM openjdk:17-jdk-alpine
+# Use a suitable base image for Java 17 applications
+FROM openjdk:17-alpine
 
-# Thiết lập thư mục làm việc của ứng dụng trong container
+# Set a working directory
 WORKDIR /app
 
-# Sao chép file GeoLite2-City.mmdb từ thư mục src/main/resources vào thư mục đích trong container
-COPY src/main/resources/GeoLite2-City.mmdb /app/resources/GeoLite2-City.mmdb
+# Copy the project files
+COPY . /app
 
-# Sao chép thư mục target vào thư mục đích trong container
-COPY target /app/target
+# Build the application JAR file using Maven
+RUN mvn clean package -DskipTests
 
-COPY . .
-
-# Expose cổng 8080 của container
+# Expose the application port (assuming it's 8080)
 EXPOSE 8080
 
-# Lệnh chạy ứng dụng Spring Boot khi container được khởi chạy
-CMD ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
+# Ensure the GeoLite2 City database file is accessible
+RUN mkdir -p src/main/resources
+COPY src/main/resources/GeoLite2-City.mmdb /app/src/main/resources/GeoLite2-City.mmdb
+
+# Start the application using the built JAR
+ENTRYPOINT ["java", "-jar", "target/demouploadanddownload-0.0.1-SNAPSHOT.jar"]
