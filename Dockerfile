@@ -4,14 +4,18 @@ WORKDIR /app
 COPY . .
 RUN mvn install -DskipTests=true
 
+RUN ls /app
+
+
 # Use a suitable base image for Java 17 applications
 FROM openjdk:17-alpine
 
 # Set a working directory
-WORKDIR /app
+# WORKDIR /app
+WORKDIR /run
 
 # Copy the project files
-COPY . /app
+COPY --from=BUILD /app/target/demouploadanddownload 0.0.1-SNAPSHOT.jar /run/demouploadanddownload_0.0.1-SNAPSHOT.jar
 
 RUN ls /app
 
