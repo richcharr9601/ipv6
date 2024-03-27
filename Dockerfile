@@ -1,8 +1,11 @@
-FROM maven:3.8.3-openjdk-17 AS build
-COPY . .
-RUN mvn clean package -Dskiptest
+# Sử dụng một hình ảnh cơ sở chứa Java
+FROM openjdk:17-jdk-slim
 
-FROM openjdk:17.0.1-jdk-slim
-COPY --from=build /target/Demouploadanddownload-0.0.1-SNAPSHOT.jar app.jar
+# Thêm tệp jar của ứng dụng vào hình ảnh
+ADD target/Demouploadanddownload-0.0.1-SNAPSHOT.jar app.jar
+
+# Port mà ứng dụng sử dụng
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","demo.jar"]
+
+# Lệnh chạy ứng dụng khi container được khởi chạy
+ENTRYPOINT ["java","-jar","/app.jar"]
