@@ -1,5 +1,13 @@
+FROM maven:3.5.3-jdk-8-alpine as BUILD
+
+WORKDIR /app
+COPY . .
+RUN mvn install -DskipTests=true
+
 # Use a suitable base image for Java 17 applications
 FROM openjdk:17-alpine
+
+RUN apk add openjdk17
 
 # Set a working directory
 WORKDIR /app
