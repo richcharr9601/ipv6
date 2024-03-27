@@ -18,7 +18,7 @@ public class GeoLocationService {
 
     public GeoLocationService() throws IOException {
         // Load the GeoLite2 City database file
-        File database = new File("C://Users//Welcome//Desktop//Duc//ipv6//src//main//resources/GeoLite2-City.mmdb");
+        File database = new File("src//main//resources/GeoLite2-City.mmdb");
         this.reader = new DatabaseReader.Builder(database).build();
     }
 
