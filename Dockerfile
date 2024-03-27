@@ -4,7 +4,6 @@ WORKDIR /app
 COPY . .
 RUN mvn install -DskipTests=true
 
-RUN ls /app
 
 
 # Use a suitable base image for Java 17 applications
@@ -17,6 +16,7 @@ WORKDIR /run
 # Copy the project files
 COPY . /run
 
+RUN ls /run
 
 # Expose the application port (assuming it's 8080)
 EXPOSE 8080
