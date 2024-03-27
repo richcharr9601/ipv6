@@ -23,7 +23,7 @@ EXPOSE 8080
 
 # Ensure the GeoLite2 City database file is accessible
 RUN mkdir -p src/main/resources
-COPY src/main/resources/GeoLite2-City.mmdb /app/src/main/resources/GeoLite2-City.mmdb
+COPY src/main/resources/GeoLite2-City.mmdb /run/src/main/resources/GeoLite2-City.mmdb
 
 # Start the application using the built JAR
 ENTRYPOINT ["java", "-jar", "/run/demo-0.0.1-SNAPSHOT.jar"]
