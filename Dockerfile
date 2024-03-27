@@ -7,8 +7,6 @@ RUN mvn install -DskipTests=true
 # Use a suitable base image for Java 17 applications
 FROM openjdk:17-alpine
 
-RUN apk add openjdk17
-
 # Set a working directory
 WORKDIR /app
 
