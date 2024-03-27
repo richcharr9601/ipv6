@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy the project files
 COPY . /app
 
+RUN ls /app
+
 # Expose the application port (assuming it's 8080)
 EXPOSE 8080
 
