@@ -15,4 +15,5 @@ RUN mkdir -p src/main/resources
 COPY src/main/resources/GeoLite2-City.mmdb /app/src/main/resources/GeoLite2-City.mmdb
 
 # Start the application using the built JAR
-ENTRYPOINT ["java", "-jar", "target/demouploadanddownload-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", ".mvn/wrapper/maven-wrapper.jar"]
+
