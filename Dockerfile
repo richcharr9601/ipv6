@@ -7,9 +7,6 @@ WORKDIR /app
 # Copy the project files
 COPY . /app
 
-# Build the application JAR file using Maven
-RUN mvn clean package -DskipTests
-
 # Expose the application port (assuming it's 8080)
 EXPOSE 8080
 
