@@ -10,6 +10,8 @@ COPY src/main/resources/GeoLite2-City.mmdb /app/resources/GeoLite2-City.mmdb
 # Sao chép thư mục target vào thư mục đích trong container
 COPY target /app/target
 
+COPY . .
+
 # Expose cổng 8080 của container
 EXPOSE 8080
 
