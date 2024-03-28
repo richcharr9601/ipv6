@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 
 @Component
 @RestController
@@ -71,25 +73,40 @@ public class ClientInfoController {
         }
     }
 
+    @GetMapping("/ipv62")
+    public String getClientIPv62(HttpServletRequest request) {
+        String ipv6 ="";
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        try {
+            // Get InetAddress object for the client's IP address
+            InetAddress inetAddress = InetAddress.getByName(ipAddress);
 
+            // Get the host address (IPv6 format)
+            String ipv6Address = inetAddress.getHostAddress();
+
+            System.out.println("Client's IPv6 address: " + ipv6Address);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return ipv6;
+    }
 
     @GetMapping("/ipv6")
     public String getClientIPv6(HttpServletRequest request) {
         // Lấy giá trị của header X-Forwarded-For
         String xForwardedForHeader = request.getHeader("X-Forwarded-For");
-        System.out.println(request.getRemoteAddr());
+        // System.out.println(request.getRemoteAddr());
         
         // Kiểm tra và xử lý giá trị của header X-Forwarded-For để lấy địa chỉ IPv6
         // String[] ips = xForwardedForHeader.split(",");
+        
         String ipv6Address = "";
-        // for (String ip : ips) {
-        //     if (ip.contains(":")) {
-        //         ipv6Address = ip.trim();
-        //         break;
-        //     }
-        // }
-
-        // Trả về địa chỉ IPv6 của client
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if(ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+            System.out.println(ipAddress);
+        }
+        
         return ipv6Address;
     }
 
