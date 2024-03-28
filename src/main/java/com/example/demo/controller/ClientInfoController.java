@@ -74,41 +74,41 @@ public class ClientInfoController {
     }
 
     @GetMapping("/ipv62")
-    public String getIpv6FromXForwardedFor(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-    
-        if (xForwardedFor == null || xForwardedFor.isEmpty()) {
-            return null; // No header present
-        }
-    
-        // Split the comma-separated values
-        String[] addresses = xForwardedFor.split(",");
-    
-        // Check each address from right to left (most recent proxy first)
-        for (int i = addresses.length - 1; i >= 0; i--) {
-            String address = addresses[i].trim(); // Remove leading/trailing whitespaces
-    
-            // Handle IPv6 wrapped in brackets with optional prefix
-            if (address.startsWith("[") && address.endsWith("]")) {
-                address = address.substring(1, address.length() - 1); // Extract inner content
-                if (address.startsWith("::ffff:")) {
-                    address = address.substring(7); // Remove prefix for IPv6 compatibility
+    public String getClientIPv6FromXForwardedFor(HttpServletRequest request) {
+        String ipv6Address = null;
+
+        // Get the X-Forwarded-For header value
+        String xForwardedForHeader = request.getHeader("X-Forwarded-For");
+
+        // If the header value is not null and not empty
+        if (xForwardedForHeader != null && !xForwardedForHeader.isEmpty()) {
+            // Split the header value into individual IP addresses
+            String[] ipAddresses = xForwardedForHeader.split(",");
+
+            // Iterate through each IP address
+            for (String ipAddress : ipAddresses) {
+                ipAddress = ipAddress.trim();
+                System.out.println(ipAddresses);
+                // Check if the IP address is IPv6
+                if (isIPv6Address(ipAddress)) {
+                    ipv6Address = ipAddress;
+                    break; // Break the loop if an IPv6 address is found
                 }
             }
-    
-            try {
-                // Attempt to parse as IPv6 address (using a validated library)
-                InetAddress inetAddress = InetAddress.getByName(address);
-                if (inetAddress instanceof Inet6Address) {
-                    return address; // Valid IPv6 address found
-                }
-            } catch (UnknownHostException e) {
-                // Ignore parsing errors (could be IPv4 or invalid format)
-            }        
-            System.out.println(address);
         }
-        // No valid IPv6 found in the chain
-        return null;
+
+        return ipv6Address;
+    }
+
+    // Utility method to check if a string represents an IPv6 address
+    private boolean isIPv6Address(String ipAddress) {
+        try {
+            // Try parsing the IP address
+            java.net.InetAddress inetAddress = java.net.InetAddress.getByName(ipAddress);
+            return inetAddress instanceof java.net.Inet6Address; // If parsing succeeds, it's IPv6
+        } catch (java.net.UnknownHostException e) {
+            return false; // If parsing fails, it's not IPv6
+        }
     }
 
     @GetMapping("/ipv6")
