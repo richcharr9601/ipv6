@@ -74,21 +74,41 @@ public class ClientInfoController {
     }
 
     @GetMapping("/ipv62")
-    public String getClientIPv62(HttpServletRequest request) {
-        String ipv6 ="";
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        try {
-            // Get InetAddress object for the client's IP address
-            InetAddress inetAddress = InetAddress.getByName(ipAddress);
-
-            // Get the host address (IPv6 format)
-            String ipv6Address = inetAddress.getHostAddress();
-
-            System.out.println("Client's IPv6 address: " + ipv6Address);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+    public String getIpv6FromXForwardedFor(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+    
+        if (xForwardedFor == null || xForwardedFor.isEmpty()) {
+            return null; // No header present
         }
-        return ipv6;
+    
+        // Split the comma-separated values
+        String[] addresses = xForwardedFor.split(",");
+    
+        // Check each address from right to left (most recent proxy first)
+        for (int i = addresses.length - 1; i >= 0; i--) {
+            String address = addresses[i].trim(); // Remove leading/trailing whitespaces
+    
+            // Handle IPv6 wrapped in brackets with optional prefix
+            if (address.startsWith("[") && address.endsWith("]")) {
+                address = address.substring(1, address.length() - 1); // Extract inner content
+                if (address.startsWith("::ffff:")) {
+                    address = address.substring(7); // Remove prefix for IPv6 compatibility
+                }
+            }
+    
+            try {
+                // Attempt to parse as IPv6 address (using a validated library)
+                InetAddress inetAddress = InetAddress.getByName(address);
+                if (inetAddress instanceof Inet6Address) {
+                    return address; // Valid IPv6 address found
+                }
+            } catch (UnknownHostException e) {
+                // Ignore parsing errors (could be IPv4 or invalid format)
+            }
+        }
+    
+        // No valid IPv6 found in the chain
+        return null;
     }
 
     @GetMapping("/ipv6")
