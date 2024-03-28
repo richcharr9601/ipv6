@@ -104,9 +104,9 @@ public class ClientInfoController {
                 }
             } catch (UnknownHostException e) {
                 // Ignore parsing errors (could be IPv4 or invalid format)
-            }
+            }        
+            System.out.println(address);
         }
-    
         // No valid IPv6 found in the chain
         return null;
     }
