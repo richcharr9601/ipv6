@@ -74,42 +74,20 @@ public class ClientInfoController {
     }
 
     @GetMapping("/ipv62")
-    public String getClientIPv6FromXForwardedFor(HttpServletRequest request) {
-        String ipv6Address = null;
-
-        // Get the X-Forwarded-For header value
+    public InetAddress  getClientIPv62(HttpServletRequest request) throws UnknownHostException{
         String xForwardedForHeader = request.getHeader("X-Forwarded-For");
-
-        // If the header value is not null and not empty
+       
         if (xForwardedForHeader != null && !xForwardedForHeader.isEmpty()) {
-            // Split the header value into individual IP addresses
-            String[] ipAddresses = xForwardedForHeader.split(",");
-
-            // Iterate through each IP address
-            for (String ipAddress : ipAddresses) {
-                ipAddress = ipAddress.trim();
-                System.out.println(ipAddresses);
-                // Check if the IP address is IPv6
-                if (isIPv6Address(ipAddress)) {
-                    ipv6Address = ipAddress;
-                    break; // Break the loop if an IPv6 address is found
+            String[] addresses = xForwardedForHeader.split(",");
+            for (String address : addresses) {
+                InetAddress addr = InetAddress.getByName(address.trim());
+                if (addr instanceof Inet6Address) {
+                    System.out.println("IPv6 Address: " + addr.getHostAddress());
+                    return addr;
                 }
             }
         }
-
-        return ipv6Address;
-    }
-
-    // Utility method to check if a string represents an IPv6 address
-    private boolean isIPv6Address(String ipAddress) {
-        try {
-            // Try parsing the IP address
-            java.net.InetAddress inetAddress = java.net.InetAddress.getByName(ipAddress);
-            return inetAddress instanceof java.net.Inet6Address; // If parsing succeeds, it's IPv6
-        } catch (java.net.UnknownHostException e) {
-            return false; // If parsing fails, it's not IPv6
-        }
-    }
+            throw new UnknownHostException("No IPv6 address found for " + request);    }
 
     @GetMapping("/ipv6")
     public String getClientIPv6(HttpServletRequest request) {
@@ -126,9 +104,7 @@ public class ClientInfoController {
             ipAddress = request.getRemoteAddr();
             System.out.println(ipAddress);
         }
-        
         return ipv6Address;
     }
-
 }
 
