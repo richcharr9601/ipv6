@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 //for java 8
 //import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 
 @Component
 @RestController
@@ -34,21 +36,20 @@ public class ClientInfoController {
         this.geoLocationService = geoLocationService;
     }
 
-    
+
     public String getIpV6(){
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet httpGet = new HttpGet("https://api6.ipify.org?format=json");
-
         try {
             HttpResponse response = httpClient.execute(httpGet);
             String jsonResponse = EntityUtils.toString(response.getEntity());
-            System.out.println("JSON Response: " + jsonResponse);
+            // System.out.println("JSON Response: " + jsonResponse);
 
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(jsonResponse, JsonObject.class);
 
             String ip = jsonObject.get("ip").getAsString();
-            System.out.println("IP: " + ip);
+            // System.out.println("IP: " + ip);
             return ip;
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,6 +62,7 @@ public class ClientInfoController {
         String ipAddress = getIpV6();
         // System.out.println(ipAddress);
 //        String ipAddress = request.getRemoteAddr();
+
         try {
             return geoLocationService.getGeoLocationInfo(ipAddress, request);
         } catch (IOException | GeoIp2Exception e) {
@@ -68,5 +70,28 @@ public class ClientInfoController {
             return "Error retrieving geolocation information";
         }
     }
+
+
+
+    @GetMapping("/ipv6")
+    public String getClientIPv6(HttpServletRequest request) {
+        // Lấy giá trị của header X-Forwarded-For
+        String xForwardedForHeader = request.getHeader("X-Forwarded-For");
+        System.out.println(request.getRemoteAddr());
+        
+        // Kiểm tra và xử lý giá trị của header X-Forwarded-For để lấy địa chỉ IPv6
+        // String[] ips = xForwardedForHeader.split(",");
+        String ipv6Address = "";
+        // for (String ip : ips) {
+        //     if (ip.contains(":")) {
+        //         ipv6Address = ip.trim();
+        //         break;
+        //     }
+        // }
+
+        // Trả về địa chỉ IPv6 của client
+        return ipv6Address;
+    }
+
 }
 
