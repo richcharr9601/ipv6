@@ -34,6 +34,7 @@ public class ClientInfoController {
         this.geoLocationService = geoLocationService;
     }
 
+    
     public String getIpV6(){
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet httpGet = new HttpGet("https://api6.ipify.org?format=json");
